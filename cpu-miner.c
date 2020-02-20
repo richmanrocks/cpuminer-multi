@@ -142,6 +142,7 @@ enum algos {
 	ALGO_XEVAN,
 	ALGO_YESCRYPT,
 	ALGO_ZR5,
+    ALGO_CURVEHASH,
 	ALGO_COUNT
 };
 
@@ -211,6 +212,7 @@ static const char *algo_names[] = {
 	"xevan",
 	"yescrypt",
 	"zr5",
+    "curvehash",
 	"\0"
 };
 
@@ -377,6 +379,7 @@ Options:\n\
                           xevan        Xevan (BitSend)\n\
                           yescrypt     Yescrypt\n\
                           zr5          ZR5\n\
+                          curvehash    curveHash\n\
   -o, --url=URL         URL of mining server\n\
   -O, --userpass=U:P    username:password pair for mining server\n\
   -u, --user=USERNAME   username for mining server\n\
@@ -2456,6 +2459,10 @@ static void *miner_thread(void *userdata)
 		case ALGO_ZR5:
 			rc = scanhash_zr5(thr_id, &work, max_nonce, &hashes_done);
 			break;
+		case ALGO_CURVEHASH:
+			rc = scanhash_curvehash(thr_id, &work, max_nonce, &hashes_done);
+			break;
+
 		default:
 			/* should never happen */
 			goto out;

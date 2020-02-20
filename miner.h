@@ -264,7 +264,7 @@ int scanhash_x20r(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *h
 int scanhash_xevan(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 int scanhash_yescrypt(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 int scanhash_zr5(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
-
+int scanhash_curvehash(int thr_id, struct work *work, uint32_t max_nonce, uint64_t *hashes_done);
 /* api related */
 void *api_thread(void *userdata);
 
@@ -376,6 +376,10 @@ void restart_threads(void);
 extern json_t *json_rpc_call(CURL *curl, const char *url, const char *userpass,
 	const char *rpc_req, int *curl_err, int flags);
 void bin2hex(char *s, const unsigned char *p, size_t len);
+void applog_be32_hex(const char *prefix, const uint32_t *data, size_t len);
+void applog_rbe32_hex(const char *prefix, const uint32_t *data, size_t len);
+char *arbe32tohex(const uint32_t *data, size_t len);
+char *abe32tohex(const uint32_t *data, size_t len);
 char *abin2hex(const unsigned char *p, size_t len);
 bool hex2bin(unsigned char *p, const char *hexstr, size_t len);
 bool jobj_binary(const json_t *obj, const char *key, void *buf, size_t buflen);
@@ -497,6 +501,7 @@ void applog_compare_hash(void *hash, void *hash_ref);
 void applog_hex(void *data, int len);
 void applog_hash(void *hash);
 void applog_hash64(void *hash);
+void applog_hex_prefix(void *prefix, void *data, int len);
 void format_hashrate(double hashrate, char *output);
 void print_hash_tests(void);
 

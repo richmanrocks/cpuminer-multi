@@ -8,6 +8,9 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 
+dnl Libtool init checks.
+LT_INIT([pic-only])
+
 dnl Make sure anyone changing configure.ac/Makefile.am has a clue
 AM_MAINTAINER_MODE
 
@@ -141,7 +144,7 @@ if test x$request_jansson = xtrue ; then
 else
 	JANSSON_LIBS=-ljansson
 fi
-
+SECP256K1_LIBS=-llibsecp256k1
 # libcurl install path (for mingw : --with-curl=/usr/local)
 AC_ARG_WITH([curl],
    [  --with-curl=PATH         prefix where curl is installed [default=/usr]])
@@ -150,7 +153,7 @@ if test -n "$with_curl" ; then
    LIBCURL_CFLAGS="$LIBCURL_CFLAGS -I$with_curl/include"
    LIBCURL_CPPFLAGS="$LIBCURL_CPPFLAGS -I$with_curl/include"
    LIBCURL_LDFLAGS="-L$with_curl/lib $LIBCURL_LDFLAGS"
-   LIBCURL="-lcurl -lz"
+   LIBCURL="-lcurl"
 fi
 
 # SSL install path (for mingw : --with-crypto=/usr/local/ssl)
@@ -166,7 +169,7 @@ fi
 
 CFLAGS="$CFLAGS $LIBCURL_CFLAGS"
 CPPFLAGS="$CPPFLAGS $LIBCURL_CPPFLAGS"
-LDFLAGS="$LDFLAGS $LIBCURL_LDFLAGS"
+LDFLAGS="$LDFLAGS"
 
 AC_CHECK_LIB([z],[gzopen],[],[])
 AC_CHECK_LIB([crypto],[EVP_DigestFinal_ex], crypto=yes, [AC_MSG_ERROR([OpenSSL crypto library required])])
@@ -188,10 +191,22 @@ AC_SUBST(JANSSON_LIBS)
 AC_SUBST(PTHREAD_FLAGS)
 AC_SUBST(PTHREAD_LIBS)
 AC_SUBST(WS2_LIBS)
+AC_SUBST(LIBTOOL_APP_LDFLAGS)
 
+ac_configure_args="${ac_configure_args} --disable-shared --with-pic --with-bignum=no --enable-module-recovery --disable-jni"
+AC_CONFIG_SUBDIRS([secp256k1])
 AC_CONFIG_FILES([
 	Makefile
 	compat/Makefile
 	compat/jansson/Makefile
 	])
 AC_OUTPUT
+echo
+echo "  CC            = $CC"
+echo "  CFLAGS        = $CFLAGS"
+echo "  CPPFLAGS      = $CPPFLAGS"
+echo "  CXX           = $CXX"
+echo "  CXXFLAGS      = $CXXFLAGS"
+echo "  LDFLAGS       = $LDFLAGS"
+echo "  ARFLAGS       = $ARFLAGS"
+echo
